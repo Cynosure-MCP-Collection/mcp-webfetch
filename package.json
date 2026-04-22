@@ -1,0 +1,51 @@
+{
+    "name": "@cynosure-mcp/webfetch",
+    "mcpName": "io.github.andreasjhagen/arachnifetch",
+    "version": "1.0.1",
+    "description": "MCP server for intelligent web page fetching with LLM-optimized markdown output",
+    "type": "module",
+    "main": "dist/index.js",
+    "bin": {
+        "webfetch": "dist/index.js"
+    },
+    "scripts": {
+        "build": "tsc",
+        "start": "node dist/index.js",
+        "dev": "tsx src/index.ts",
+        "postinstall": "npx playwright install chromium"
+    },
+    "dependencies": {
+        "@modelcontextprotocol/sdk": "^1.27.1",
+        "defuddle": "^0.17.0",
+        "jsdom": "^26.1.0",
+        "playwright": "^1.52.0",
+        "turndown": "^7.2.0",
+        "turndown-plugin-gfm": "^1.0.2",
+        "zod": "^3.24.0"
+    },
+    "devDependencies": {
+        "@types/jsdom": "^21.1.7",
+        "@types/node": "^22.0.0",
+        "@types/turndown": "^5.0.5",
+        "tsx": "^4.19.0",
+        "typescript": "^5.7.0"
+    },
+    "files": [
+        "dist",
+        "server.json",
+        "icon.png"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "keywords": [
+        "mcp",
+        "model-context-protocol",
+        "web-scraper",
+        "markdown",
+        "browser",
+        "puppeteer",
+        "content-extraction",
+        "ai"
+    ]
+}
