@@ -16,11 +16,11 @@ import { fetchAndExtract, extractLinks } from './extract.js';
 // ── MCP Server ─────────────────────────────────────────────────────────────────
 
 const server = new McpServer({
-    name: 'ArachniFetch',
+    name: 'Web Fetcher',
     version: '1.1.0',
-    title: 'ArachniFetch – Web Fetcher',
+    title: 'Web Fetcher',
     description: 'Stealthy web page fetcher that converts pages to clean, LLM-readable markdown with optional link extraction and media download.',
-    icons: [{ src: 'https://raw.githubusercontent.com/andreasjhagen/OpenAgent-MCPs/main/mcp-arachnifetch/icon.png', mimeType: 'image/png' }],
+    icons: [{ src: 'https://raw.githubusercontent.com/andreasjhagen/Cynosure-MCPs/main/mcp-webfetch/icon.png', mimeType: 'image/png' }],
 });
 
 // ── Tool: fetch_page ───────────────────────────────────────────────────────────
