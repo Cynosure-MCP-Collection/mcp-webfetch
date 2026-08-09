@@ -28,6 +28,7 @@ const server = new McpServer({
 server.registerTool(
     'fetch_page',
     {
+        annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
         description:
             'Fetch a web page and return its content as clean, structured markdown. ' +
             'Uses a real browser engine to handle JavaScript-rendered content. ' +
@@ -84,6 +85,7 @@ server.registerTool(
 server.registerTool(
     'screenshot_page',
     {
+        annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
         description:
             'Take a screenshot of a web page and return it as a base64-encoded PNG image. ' +
             'Useful for visually inspecting page layout or verifying content.',
@@ -147,6 +149,7 @@ server.registerTool(
 server.registerTool(
     'get_page_links',
     {
+        annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
         description:
             'Get all links found on a web page, grouped by internal (same site) and external links. ' +
             'Does NOT extract page content — use fetch_page for that. ' +
@@ -296,6 +299,7 @@ function formatSize(bytes: number): string {
 server.registerTool(
     'download_file',
     {
+        annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true },
         description:
             'Download any file from a URL to the local disk. ' +
             'Handles all file types: images, audio, video, archives (zip, tar, 7z), documents (PDF, DOCX), binaries, and more. ' +
