@@ -20,7 +20,7 @@ const server = new McpServer({
     version: '1.1.0',
     title: 'Web Fetcher',
     description: 'Stealthy web page fetcher that converts pages to clean, LLM-readable markdown with optional link extraction and media download.',
-    icons: [{ src: 'https://raw.githubusercontent.com/andreasjhagen/Cynosure-MCPs/main/mcp-webfetch/icon.png', mimeType: 'image/png' }],
+    icons: [{ src: 'https://unpkg.com/@cynosure-mcp/webfetch@1.0.4/icon.png', mimeType: 'image/png' }],
 });
 
 // ── Tool: fetch_page ───────────────────────────────────────────────────────────

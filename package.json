@@ -1,7 +1,7 @@
 {
   "name": "@cynosure-mcp/webfetch",
-  "mcpName": "io.github.andreasjhagen/arachnifetch",
-  "version": "1.0.3",
+  "mcpName": "io.github.andreasjhagen/webfetch",
+  "version": "1.0.4",
   "description": "MCP server for intelligent web page fetching with LLM-optimized markdown output",
   "type": "module",
   "main": "dist/index.js",
