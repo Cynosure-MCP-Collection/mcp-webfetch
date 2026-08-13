@@ -12,7 +12,9 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "postinstall": "npx playwright install chromium"
+    "postinstall": "npx playwright install chromium",
+    "release:check": "node scripts/sync-version.mjs --check",
+    "version": "node scripts/sync-version.mjs && git add server.json"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
