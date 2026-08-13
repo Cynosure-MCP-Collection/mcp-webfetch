@@ -47,5 +47,13 @@
     "puppeteer",
     "content-extraction",
     "ai"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cynosure-MCP-Collection/mcp-webfetch.git"
+  },
+  "homepage": "https://github.com/Cynosure-MCP-Collection/mcp-webfetch#readme",
+  "bugs": {
+    "url": "https://github.com/Cynosure-MCP-Collection/mcp-webfetch/issues"
+  }
 }
