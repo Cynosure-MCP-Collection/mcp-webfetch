@@ -8,16 +8,17 @@ import { homedir } from 'os';
 import { pipeline } from 'stream/promises';
 import { Readable } from 'stream';
 
-import { NAVIGATION_TIMEOUT } from './constants.js';
+import { NAVIGATION_TIMEOUT, SERVER_VERSION } from './constants.js';
 import { getFilterBundle } from './filters.js';
 import { closeBrowser, getBrowserContext, navigateAndCleanup, applyPageCleanup } from './browser.js';
 import { fetchAndExtract, extractLinks } from './extract.js';
+import { isHttpUrl } from './url.js';
 
 // ── MCP Server ─────────────────────────────────────────────────────────────────
 
 const server = new McpServer({
     name: 'Web Fetcher',
-    version: '1.1.0',
+    version: SERVER_VERSION,
     title: 'Web Fetcher',
     description: 'Stealthy web page fetcher that converts pages to clean, LLM-readable markdown with optional link extraction and media download.',
     icons: [{ src: 'https://unpkg.com/@cynosure-mcp/webfetch@1.0.4/icon.png', mimeType: 'image/png' }],
@@ -35,7 +36,7 @@ server.registerTool(
             'Extracts the main article/content by default, stripping navbars, ads, and boilerplate. ' +
             'Use get_page_links to discover links on the page for navigation.',
         inputSchema: {
-            url: z.string().url().describe('The URL to fetch'),
+            url: z.string().url().refine(isHttpUrl, 'URL must use HTTP or HTTPS').describe('The URL to fetch'),
             only_main_content: z.boolean().default(true).describe(
                 'When true (default), extracts only the main content (article body) using smart content detection, ' +
                 'stripping navigation, ads, footers, and other boilerplate. Set to false to get the full page content.'
@@ -90,7 +91,7 @@ server.registerTool(
             'Take a screenshot of a web page and return it as a base64-encoded PNG image. ' +
             'Useful for visually inspecting page layout or verifying content.',
         inputSchema: {
-            url: z.string().url().describe('The URL to screenshot'),
+            url: z.string().url().refine(isHttpUrl, 'URL must use HTTP or HTTPS').describe('The URL to screenshot'),
             full_page: z.boolean().default(false).describe(
                 'Capture the full scrollable page instead of just the viewport.'
             ),
@@ -156,7 +157,7 @@ server.registerTool(
             'Faster than fetch_page since it skips content extraction. ' +
             'Use this to explore site structure and find relevant sub-pages before fetching them.',
         inputSchema: {
-            url: z.string().url().describe('The URL to scan for links'),
+            url: z.string().url().refine(isHttpUrl, 'URL must use HTTP or HTTPS').describe('The URL to scan for links'),
             mobile: z.boolean().default(false).describe(
                 'Load the page as a mobile device.'
             ),
@@ -263,7 +264,7 @@ function getDefaultDownloadsDir(): string {
     return join(homedir(), 'Downloads');
 }
 
-function sanitizeFilename(name: string): string {
+export function sanitizeFilename(name: string): string {
     return name
         .replace(/[<>:"/\\|?*\x00-\x1f]/g, '_')
         .replace(/\s+/g, '_')
@@ -272,7 +273,7 @@ function sanitizeFilename(name: string): string {
         .slice(0, 200);
 }
 
-function deriveFilename(url: string, contentType: string | null): string {
+export function deriveFilename(url: string, contentType: string | null): string {
     // Try to get a name from the URL path
     try {
         const parsed = new URL(url);
@@ -306,7 +307,7 @@ server.registerTool(
             'Files are saved to ~/Downloads by default, or a custom path. ' +
             'Returns the saved file path and size.',
         inputSchema: {
-            url: z.string().url().describe('Direct URL to the file to download'),
+            url: z.string().url().refine(isHttpUrl, 'URL must use HTTP or HTTPS').describe('Direct URL to the file to download'),
             filename: z.string().optional().describe(
                 'Custom filename for the saved file (optional). If omitted, derived from the URL or content type.'
             ),

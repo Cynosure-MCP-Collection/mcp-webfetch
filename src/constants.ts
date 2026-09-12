@@ -5,6 +5,7 @@ export const NAVIGATION_TIMEOUT = 30_000;
 export const FILTER_FETCH_TIMEOUT = 15_000;
 export const FILTER_REFRESH_MS = 24 * 60 * 60 * 1000;
 export const CSS_CHUNK_SIZE = 400;
+export const SERVER_VERSION = '1.0.4';
 
 // ── Filter Lists ───────────────────────────────────────────────────────────────
 

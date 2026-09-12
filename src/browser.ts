@@ -52,10 +52,6 @@ export async function applyPageCleanup(page: Page, filters: FilterBundle, url: s
 
     for (let i = 0; i < selectors.length; i += CSS_CHUNK_SIZE) {
         const chunk = selectors.slice(i, i + CSS_CHUNK_SIZE);
-        const css = chunk
-            .map((s) => `${s} { display: none !important; visibility: hidden !important; }`)
-            .join('\n');
-        await page.addStyleTag({ content: css }).catch(() => { });
         await page.evaluate((nodes) => {
             for (const selector of nodes) {
                 try {
@@ -128,7 +124,6 @@ export async function ensureBrowser(): Promise<Browser> {
 
 async function createStealthContext(ua: string, viewport: { width: number; height: number }, isMobile: boolean): Promise<BrowserContext> {
     const b = await ensureBrowser();
-    const filters = await getFilterBundle();
     const ctx = await b.newContext({
         userAgent: ua,
         viewport,
@@ -168,10 +163,16 @@ async function createStealthContext(ua: string, viewport: { width: number; heigh
         const { frameUrl, hasParentFrame } = getRequestFrameInfo(request);
 
         if (resourceType === 'document' && !hasParentFrame) {
+            const protocol = new URL(request.url()).protocol;
+            if (protocol !== 'http:' && protocol !== 'https:') {
+                await route.abort('blockedbyclient').catch(() => { });
+                return;
+            }
             await route.continue().catch(() => { });
             return;
         }
 
+        const filters = await getFilterBundle();
         if (shouldBlockRequest(request.url(), frameUrl, filters.blockedDomains)) {
             await route.abort('blockedbyclient').catch(() => route.abort().catch(() => { }));
             return;
@@ -217,18 +218,22 @@ export async function navigateAndCleanup(
     const { mobile = false, waitTime = 0 } = options;
     const [ctx, filters] = await Promise.all([getBrowserContext(mobile), getFilterBundle()]);
     const page = await ctx.newPage();
+    try {
+        await page.goto(url, {
+            waitUntil: 'domcontentloaded',
+            timeout: NAVIGATION_TIMEOUT,
+        });
 
-    await page.goto(url, {
-        waitUntil: 'domcontentloaded',
-        timeout: NAVIGATION_TIMEOUT,
-    });
+        await page.waitForLoadState('networkidle', { timeout: 10_000 }).catch(() => { });
+        if (waitTime > 0) {
+            await page.waitForTimeout(Math.min(waitTime, 10) * 1000);
+        }
 
-    await page.waitForLoadState('networkidle', { timeout: 10_000 }).catch(() => { });
-    if (waitTime > 0) {
-        await page.waitForTimeout(Math.min(waitTime, 10) * 1000);
+        await applyPageCleanup(page, filters, page.url());
+
+        return { page, filters, finalUrl: page.url() };
+    } catch (error) {
+        await page.close().catch(() => { });
+        throw error;
     }
-
-    await applyPageCleanup(page, filters, page.url());
-
-    return { page, filters, finalUrl: page.url() };
 }

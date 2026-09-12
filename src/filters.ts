@@ -122,7 +122,7 @@ function addDomainScopedSelector(
 
 // ── Filter Parsing ─────────────────────────────────────────────────────────────
 
-function parseFilterText(
+export function parseFilterText(
     text: string,
     blockedDomains: Set<string>,
     genericSelectors: Set<string>,

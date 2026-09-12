@@ -41,7 +41,7 @@ export function createTurndownService(): TurndownService {
 
     td.remove(['script', 'style', 'noscript', 'iframe']);
     td.addRule('remove-svg', {
-        filter: (node) => node.nodeName === 'SVG',
+        filter: (node) => node.nodeName.toLowerCase() === 'svg',
         replacement: () => '',
     });
 
